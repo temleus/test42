@@ -1,4 +1,4 @@
-package com.example.task;
+package com.task;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,10 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.example.task.Constants;
-import com.example.task.R;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;

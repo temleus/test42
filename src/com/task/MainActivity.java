@@ -1,10 +1,12 @@
-package com.example.task;
+package com.task;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 public class MainActivity extends SherlockFragmentActivity {
 
     private SimpleFragmentPagerAdapter adapter;
+    private ViewPager pager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,13 +31,18 @@ public class MainActivity extends SherlockFragmentActivity {
         adapter.addFragment("User", UserFragment.class, null);
         adapter.addFragment("Friends", FriendListFragment.class, null);
 
-        ViewPager pager = (ViewPager)findViewById(R.id.pager);
+        pager = (ViewPager)findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
         TabPageIndicator indicator = (TabPageIndicator)findViewById(R.id.indicator);
         indicator.setViewPager(pager);
 
         pager.setCurrentItem(0);
+    }
+
+    @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        super.addContentView(view, params);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     public static class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {

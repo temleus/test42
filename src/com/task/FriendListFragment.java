@@ -1,4 +1,4 @@
-package com.example.task;
+package com.task;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

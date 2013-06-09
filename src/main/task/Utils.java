@@ -1,4 +1,4 @@
-package com.example.task;
+package main.task;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

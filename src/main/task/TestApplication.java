@@ -1,10 +1,9 @@
-package com.example.task;
+package main.task;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
-import com.example.task.db.UserDbHelper;
+import main.task.db.UserDbHelper;
 
 import java.util.Date;
 

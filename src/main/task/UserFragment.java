@@ -1,4 +1,4 @@
-package com.example.task;
+package main.task;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.example.task.db.UserDbHelper;
+import main.task.db.UserDbHelper;
 import com.facebook.*;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
