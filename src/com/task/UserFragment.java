@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.TestableSherlockFragment;
 import com.facebook.*;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
@@ -26,7 +27,7 @@ import java.lang.reflect.Field;
  * @author Leus Artem
  * @since 02.06.13
  */
-public class UserFragment extends SherlockFragment {
+public class UserFragment extends TestableSherlockFragment {
 
     private static final String TAG = "UserFragment";
 
@@ -61,23 +62,6 @@ public class UserFragment extends SherlockFragment {
                 app.dialogShown = true;
                 dialog.show(fm, "dialog");
             }
-        }
-
-        setmFromLayoutField(true);
-
-    }
-
-    private void setmFromLayoutField(boolean b){
-        Field field = null;
-        try {
-            field = Fragment.class.getDeclaredField("mFromLayout");
-            field.setAccessible(true);
-            field.setBoolean(this, b);
-            field.setAccessible(false);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
     }
 
@@ -117,7 +101,6 @@ public class UserFragment extends SherlockFragment {
         TestApplication app = (TestApplication) getActivity().getApplicationContext();
         app.userFragment = this;
         updateUserUI();
-        setmFromLayoutField(false);
     }
 
     private void updateUserUI(){
