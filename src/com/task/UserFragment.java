@@ -184,6 +184,10 @@ public class UserFragment extends SherlockFragment {
         }
     }
 
+    public boolean isSessionOpened(){
+        return Session.getActiveSession() == null ? false : Session.getActiveSession().isOpened();
+    }
+
     @Override
     public void onResume() {
         super.onResume();

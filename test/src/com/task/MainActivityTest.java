@@ -53,17 +53,4 @@ public class MainActivityTest {
                 && bioView instanceof TextView
                 && emailView instanceof TextView);
     }
-
-    // TODO can't work with facebook LoginActivity, sort it out
-   /* @Test
-    public void rightIntentTest() throws Exception {
-        LoginButton fbLoginButton = (LoginButton) userFragment.getView().findViewById(R.id.authButton);
-        fbLoginButton.performClick();
-
-        ShadowActivity shadowActivity = shadowOf(activity);
-        Intent startedIntent = shadowActivity.getNextStartedActivity();
-        ShadowIntent shadowIntent = shadowOf(startedIntent);
-
-//       assertThat(x, equalTo(x));
-    }*/
 }
