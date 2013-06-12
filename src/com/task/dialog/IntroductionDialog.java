@@ -1,4 +1,4 @@
-package com.task;
+package com.task.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,6 +13,8 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.LoginButton;
+import com.task.Constants;
+import com.task.R;
 
 /**
  * @author Leus Artem
