@@ -2,26 +2,29 @@ package com.task;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.TestableSherlockFragment;
 import com.facebook.*;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
 import com.task.db.UserDbHelper;
+import com.task.dialog.DatePickerDialog;
+import com.task.dialog.EditFieldDialog;
+import com.task.dialog.EditTwoFieldsDialog;
+import com.task.dialog.IntroductionDialog;
 
-import java.lang.reflect.Field;
+import java.util.Calendar;
 
 /**
  * @author Leus Artem
@@ -35,6 +38,7 @@ public class UserFragment extends TestableSherlockFragment {
     private TextView nameView, surnameView, birthdateView, bioView, emailView;
     private ProfilePictureView profilePictureView;
     private ImageView defaultProfilePic, syncButton;
+    private  TestApplication app;
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
         @Override
@@ -49,7 +53,7 @@ public class UserFragment extends TestableSherlockFragment {
         uiHelper = new UiLifecycleHelper(this.getActivity(), callback);
         uiHelper.onCreate(savedInstanceState);
 
-        TestApplication app = (TestApplication) getActivity().getApplicationContext();
+        app = (TestApplication) getActivity().getApplicationContext();
         // check connection availability
         if (!Utils.isOnline(getActivity())) {
             Toast.makeText(getActivity(), "No internet connection!", Toast.LENGTH_SHORT);
@@ -72,7 +76,88 @@ public class UserFragment extends TestableSherlockFragment {
         LoginButton authButton = (LoginButton) view.findViewById(R.id.authButton);
         authButton.setReadPermissions(Constants.FB_PERMISSIONS);
         authButton.setFragment(this);
+
+        createButtonsListeners(view);
         return view;
+    }
+
+    private void createButtonsListeners(View rootView){
+        final UserDbHelper.UserEntity iAm = app.getMyself();
+
+        ImageView editNameSurnameBtn = (ImageView) rootView.findViewById(R.id.editNameAndSurname);
+        ImageView editBirthdayBtn = (ImageView) rootView.findViewById(R.id.editBirthdate);
+        ImageView editBioBtn = (ImageView) rootView.findViewById(R.id.editBio);
+        ImageView editEmailBtn = (ImageView) rootView.findViewById(R.id.editEmail);
+
+        final Runnable onUpdateUiRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateUserUI();
+            }
+        };
+
+        final FragmentManager fm = getFragmentManager();
+
+        editNameSurnameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new EditTwoFieldsDialog(iAm.name, iAm.surname, "Edit", new EditTwoFieldsDialog.OnDataChangedLitener() {
+                    @Override
+                    public void onChanged(String val1, String val2) {
+                        iAm.name = val1;
+                        iAm.surname = val2;
+                        app.saveMyself(onUpdateUiRunnable);
+                    }
+                }).show(fm, "editName");
+            }
+        });
+
+        editBirthdayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(iAm.birthdate, new android.app.DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        Calendar c = Calendar.getInstance();
+                        c.set(year, monthOfYear, dayOfMonth);
+                        iAm.birthdate = c.getTime();
+                        app.saveMyself(onUpdateUiRunnable);
+                    }
+                }).show(fm, "editBirth");
+            }
+        });
+
+        editBioBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new EditFieldDialog(iAm.bio, "Edit your bio", InputType.TYPE_CLASS_TEXT
+                        | InputType.TYPE_TEXT_FLAG_MULTI_LINE, new EditFieldDialog.OnDataChangedLitener() {
+                    @Override
+                    public void onChanged(String val1) {
+                        iAm.bio = val1;
+                        app.saveMyself(onUpdateUiRunnable);
+                    }
+                }).show(fm, "editBio");
+            }
+        });
+
+        editEmailBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new EditFieldDialog(iAm.email, "Edit your email", InputType.TYPE_CLASS_TEXT
+                        | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, new EditFieldDialog.OnDataChangedLitener() {
+                    @Override
+                    public void onChanged(String val1) {
+                        if(!Utils.isValidEmail(val1)){
+                            Toast.makeText(getActivity(), "Not valid email address", Toast.LENGTH_SHORT).show();
+                        } else {
+                            iAm.email = val1;
+                            app.saveMyself(onUpdateUiRunnable);
+                        }
+                    }
+                }).show(fm, "editMail");
+            }
+        });
     }
 
     @Override
@@ -98,14 +183,12 @@ public class UserFragment extends TestableSherlockFragment {
                 });
             }
         });
-        TestApplication app = (TestApplication) getActivity().getApplicationContext();
-        app.userFragment = this;
         updateUserUI();
     }
 
     private void updateUserUI(){
-        UserDbHelper.UserEntity iAm = getMySelfAtDb();
-        if(iAm == null) return;
+        UserDbHelper.UserEntity iAm = app.getMyself();
+        if(iAm == null) return; // test case
         if(iAm.fbId != null){    // user is already synchronized with FB so we can use his FB photo
             profilePictureView.setProfileId(iAm.fbId);
             profilePictureView.setVisibility(View.VISIBLE);
@@ -127,7 +210,7 @@ public class UserFragment extends TestableSherlockFragment {
             public void onCompleted(Response response) {
                 GraphUser fbUser = response.getGraphObjectAs(GraphUser.class);
 
-                UserDbHelper.UserEntity iAm = getMySelfAtDb();            // TODO : should probably be async
+                UserDbHelper.UserEntity iAm = app.getMyself();          // TODO : should probably be async
                 iAm.name = fbUser.getFirstName();
                 iAm.surname = fbUser.getLastName();
                 iAm.birthdate = Utils.convertStringToDate(fbUser.getBirthday());
@@ -149,13 +232,7 @@ public class UserFragment extends TestableSherlockFragment {
         }).executeAsync();
     }
 
-    private UserDbHelper.UserEntity getMySelfAtDb(){
-        UserDbHelper userDb = new UserDbHelper(getActivity().getBaseContext());
-        long selfId = PreferenceManager.getDefaultSharedPreferences(getActivity()).getLong(Constants.SELF_DB_ID, -1);
-        UserDbHelper.UserEntity iAm = userDb.findById(selfId);
-        userDb.close();
-        return iAm;
-    }
+
 
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
@@ -174,6 +251,7 @@ public class UserFragment extends TestableSherlockFragment {
     @Override
     public void onResume() {
         super.onResume();
+//        updateUserUI();
         // For scenarios where the main activity is launched and user
         // session is not null, the session state change notification
         // may not be triggered. Trigger it if it's open/closed.
@@ -195,6 +273,7 @@ public class UserFragment extends TestableSherlockFragment {
     @Override
     public void onPause() {
         super.onPause();
+        app.saveMyself(null);
         uiHelper.onPause();
     }
 
