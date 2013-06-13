@@ -30,6 +30,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
         adapter.addFragment("User", UserFragment.class, null);
         adapter.addFragment("Friends", FriendListFragment.class, null);
+        adapter.addFragment("About", AboutFragment.class, null);
 
         pager = (ViewPager)findViewById(R.id.pager);
         pager.setAdapter(adapter);
@@ -42,7 +43,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     public void addContentView(View view, ViewGroup.LayoutParams params) {
-        super.addContentView(view, params);    //To change body of overridden methods use File | Settings | File Templates.
+        super.addContentView(view, params);
     }
 
     public static class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
