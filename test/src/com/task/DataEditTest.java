@@ -1,21 +1,12 @@
 package com.task;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowAlertDialog;
-import org.robolectric.shadows.ShadowDialog;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
 
 /**
  * @author Leus Artem
@@ -30,7 +21,6 @@ public class DataEditTest {
     @Before
     public void setUp() throws Exception {
         activity = Robolectric.buildActivity(MainActivity.class).create().get();
-
         userFragment = new UserFragment();
         activity.getSupportFragmentManager().beginTransaction().add(userFragment, null).commit();
     }
