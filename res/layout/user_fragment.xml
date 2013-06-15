@@ -23,8 +23,6 @@
                 android:id="@+id/profile_pic"
                 android:layout_width="128px"
                 android:layout_height="128px"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
                 android:paddingLeft="4dp"
                 android:paddingTop="4dp"
                 android:visibility="gone"/>

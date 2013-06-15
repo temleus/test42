@@ -62,6 +62,7 @@ public class UserFragment extends TestableSherlockFragment {
             Session currentSession = Session.getActiveSession();
             if (!app.dialogShown && (currentSession == null || !currentSession.getState().isOpened())) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
+//                FragmentManager fm = getChildFragmentManager();
                 DialogFragment dialog = new IntroductionDialog();
                 app.dialogShown = true;
                 dialog.show(fm, "dialog");
@@ -192,7 +193,7 @@ public class UserFragment extends TestableSherlockFragment {
         if(iAm.fbId != null){    // user is already synchronized with FB so we can use his FB photo
             profilePictureView.setProfileId(iAm.fbId);
             profilePictureView.setVisibility(View.VISIBLE);
-            defaultProfilePic.setVisibility(View.INVISIBLE);
+            defaultProfilePic.setVisibility(View.GONE);
         }
         if(iAm.name != null) nameView.setText(iAm.name);
         if(iAm.surname != null) surnameView.setText(iAm.surname);
@@ -210,7 +211,7 @@ public class UserFragment extends TestableSherlockFragment {
             public void onCompleted(Response response) {
                 GraphUser fbUser = response.getGraphObjectAs(GraphUser.class);
 
-                UserDbHelper.UserEntity iAm = app.getMyself();          // TODO : should probably be async
+                UserDbHelper.UserEntity iAm = app.getMyself();
                 iAm.name = fbUser.getFirstName();
                 iAm.surname = fbUser.getLastName();
                 iAm.birthdate = Utils.convertStringToDate(fbUser.getBirthday());
@@ -226,8 +227,6 @@ public class UserFragment extends TestableSherlockFragment {
                     }
                 });
                 userDb.close();
-
-                onCompleteRunnable.run();
             }
         }).executeAsync();
     }

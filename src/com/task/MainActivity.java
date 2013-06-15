@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class MainActivity extends SherlockFragmentActivity {
         super.addContentView(view, params);
     }
 
-    public static class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
+    public static class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
         private final Context mContext;
         private final ArrayList<FragmentInfo> mFragments = new ArrayList<FragmentInfo>();
