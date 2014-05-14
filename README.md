@@ -1,4 +1,4 @@
-Test failed :( 
+started another test 
 ==============
 
 new repository: 
